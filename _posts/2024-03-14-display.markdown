@@ -14,4 +14,4 @@ It's extremely visible and readable from across the living room.
 
 In any case, another one in the books.  It's in Fahrenheit for now because the numbers were bigger.  A single byte would cover up to 256 if I only wanted to display three-digit integers, but I wanted four digits of precision, so I went on a quest to learn how to send two bytes at a time, which turned out to be less than trivial.  Send-a-byte/read-a-byte is pretty simple but sending an array of bytes required I reacquaint myself with C arrays and memcpy().  I had gotten too comfortable with Python's list slices and completely forgotten the syntax for pointers.
 
-Python and Arduino code for this project is [here](https://github.com/Toofty5/arduino/tree/main/led_temps)
+Python and Arduino code for this project is [here](https://github.com/2fivefive/arduino/tree/main/led_temps)
