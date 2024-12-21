@@ -18,4 +18,11 @@ This was where I ran into the "never run a GUI as root" issue because VMWare Wor
 
 CML is now working properly and I finally get to do something with it.  Things like these are why I try to keep as close as possible to CLI and text-based work.  Whenever there's an environment to build out and work in, I always find myself fighting with the environment instead of working with it.  
 
-Anyway, time to stop whining and get to work.
+Anyway, time to stop whining and get to work.  I've got these in my .zshrc to bring it up and down:
+
+```bash
+alias cml-start='ssh nunu vmrun -T player start /home/jay/vmware/cml2_p_2.8.0-6_amd64-32/cml2_p_2.8.0-6_amd64-32.vmx nogui'
+alias cml-stop='ssh nunu vmrun -T player stop /home/jay/vmware/cml2_p_2.8.0-6_amd64-32/cml2_p_2.8.0-6_amd64-32.vmx nogui'
+```
+
+
