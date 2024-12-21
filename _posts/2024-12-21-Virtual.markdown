@@ -1,0 +1,21 @@
+---
+layout: post
+title: Virtual Realty
+categories: blog
+---
+
+I have a confession: I skipped pretty much all of hardware virtualization and dove straight into containerization and orchestration.  I had been doing just fine till now.  My ENCOR Lab Manual arrived.
+
+![lab manual](/assets/lab_guide.jpg)
+
+I had purchased a license to [Cisco Modeling Labs](https://www.cisco.com/site/us/en/learn/training-certifications/training/modeling-labs/index.html) during Black Friday and hadn't really used it till now.  You've got a few options -- namely bare-metal or VM.  I do have a few viable machines for bare metal installation, but that would have been too easy, right?
+
+VMware Workstation was easy enough to get running on Nunu, our shared family server.  I did run into a day's worth of issues becuase I was trying to get it working through SSH X11 tunneling.  The CML image wanted some swap space, which, unfortunately, is disabled on Nunu for the sake of Kubernetes.  The alternative was to enable reserved memory from the host, which required root permissions.
+
+This was where I ran into the "never run a GUI as root" issue because VMWare Workstation has a graphical console.  I still don't get what was going on but I think because I was SSH'ed in, `pkexec` was losing the `DISPLAY` variable.  Eventually I installed [TigerVNC](https://tigervnc.org/) on Nunu and my laptop and VNCed in as myself, which let me run it with the right privileges.
+
+![vmware](/assets/vmware.png)
+
+CML is now working properly and I finally get to do something with it.  Things like these are why I try to keep as close as possible to CLI and text-based work.  Whenever there's an environment to build out and work in, I always find myself fighting with the environment instead of working with it.  
+
+Anyway, time to stop whining and get to work.
