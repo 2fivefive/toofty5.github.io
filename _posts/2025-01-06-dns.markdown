@@ -1,0 +1,113 @@
+---
+layout: post
+title: It was DNS
+categories: blog
+---
+```
+❯ nslookup minecraft-0.minecraft.tristan
+Server:		192.168.1.1
+Address:	192.168.1.1#53
+
+Name:	minecraft-0.minecraft.tristan
+Address: 10.100.0.1
+```
+
+Had a fun breakthrough this morning on the cluster.  I had been trying for a while to expose the CoreDNS to the home network.  Like anything DNS, there were a number of hurdles to clear along the way.
+
+Until now I had been adding static domain entries at the gateway, which works fine but just feels like too much of an easy way out.  Also, having to ask for a new entry every time you pop open a new service is a bit of a pain, especially when you're just messing around and have no idea which ones you're even going to keep in the end.
+
+So, the first order of business is CoreDNS.  It's already dynamically providing DNS inside the cluster.  It's exposed as a ClusterIP service:
+
+```
+❯ kubectl -n kube-system get svc
+NAME           TYPE           CLUSTER-IP       EXTERNAL-IP
+kube-dns       ClusterIP      172.17.0.10      <none>     
+```
+
+You can query it from your node, and it'll give you a response.  If you have a service exposed, you should be able to find a record for `service_name.namespace.svc.cluster.local`.
+
+```
+❯ nslookup minecraft-0.minecraft.svc.cluster.local 172.17.0.10
+Server:		172.17.0.10
+Address:	172.17.0.10#53
+
+Name:	minecraft-0.minecraft.svc.cluster.local
+Address: 172.17.236.254
+```
+
+Now we have a few problems.  First, CoreDNS is exposed via a ClusterIP (here, 172.17.0.10), which is only accessible from inside the cluster.  Second, if you query it, it will give you another 172 address, which again is no good from outside the cluster!
+
+I came across [this](https://www.reddit.com/r/homelab/comments/ipsc4r/howto_k8s_metallb_and_external_dns_access_for/) Reddit post, which also covers MetalLB, but I just picked out what I needed for CoreDNS, namely setting up the [k8s_external](https://coredns.io/plugins/k8s_external/#description) plugin, which is a matter of editing its configmap with `kubectl -n kube-system edit cm coredns` and adding:
+
+```
+k8s_external tristan {                                                                                                                       
+   headless                                                                                                                                   
+}     
+```
+
+I added the headless keyword because we have a number of StatefulSets and those are [headless](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services).  The above entry adds the `tristan` domain to CoreDNS, and when it is queried for `service_name.namespace.tristan`, it will give the _external_ IP addresses:
+
+```
+❯ nslookup minecraft-0.minecraft.tristan 172.17.0.10
+Server:		172.17.0.10
+Address:	172.17.0.10#53
+
+Name:	minecraft-0.minecraft.tristan
+Address: 10.100.0.1
+```
+
+Progress!  However we still have that 172 address for CoreDNS, so we'll need to expose that:
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-dns-ext
+  namespace: kube-system
+  annotations:
+    metallb.universe.tf/allow-shared-ip: "DNS"
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 53
+    name: "udp"
+    targetPort: 53
+    protocol: UDP
+  - port: 53
+    name: "tcp"
+    targetPort: 53
+    protocol: TCP
+  selector:
+    k8s-app: kube-dns
+```
+```
+❯ kubectl get svc
+NAME           TYPE           CLUSTER-IP       EXTERNAL-IP  
+kube-dns       ClusterIP      172.17.0.10      <none>      
+kube-dns-ext   LoadBalancer   172.17.233.207   10.100.0.5 
+```
+
+So, now we can query a useful ip (here, 10.100.0.5) and get useful responses!  
+
+```
+❯ nslookup minecraft-0.minecraft.tristan 10.100.0.5
+Server:		10.100.0.5
+Address:	10.100.0.5#53
+
+Name:	minecraft-0.minecraft.tristan
+Address: 10.100.0.1
+```
+There was more work to do at this point though, because I needed to set up the home gateway to forward queries for the tristan domain to CoreDNS.  Coincidentally, Ubiquiti just added that functionality in their latest update:
+
+![dns](/assets/dns1.png)
+
+So now we don't even need to specify CoreDNS and can just send queries to our gateway:
+
+```
+❯ nslookup minecraft-0.minecraft.tristan
+Server:		192.168.1.1
+Address:	192.168.1.1#53
+
+Name:	minecraft-0.minecraft.tristan
+Address: 10.100.0.1
+```
