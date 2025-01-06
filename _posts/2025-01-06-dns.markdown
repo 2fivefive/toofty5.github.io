@@ -35,7 +35,7 @@ Name:	minecraft-0.minecraft.svc.cluster.local
 Address: 172.17.236.254
 ```
 
-Now we have a few problems.  First, CoreDNS is exposed via a ClusterIP (here, 172.17.0.10), which is only accessible from inside the cluster.  Second, if you query it, it will give you another 172 address, which again is no good from outside the cluster!
+Now we have a few problems.  First, CoreDNS is exposed via a ClusterIP (here, 172.17.0.10), which is only accessible from inside the cluster.  Second, if you query it, it will give you another 172 address, which again is no good from outside the cluster!  Also, the `.svc.cluster.local` domain is kinda clunky.
 
 I came across [this](https://www.reddit.com/r/homelab/comments/ipsc4r/howto_k8s_metallb_and_external_dns_access_for/) Reddit post, which also covers MetalLB, but I just picked out what I needed for CoreDNS, namely setting up the [k8s_external](https://coredns.io/plugins/k8s_external/#description) plugin, which is a matter of editing its configmap with `kubectl -n kube-system edit cm coredns` and adding:
 
