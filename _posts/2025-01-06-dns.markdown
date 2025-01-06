@@ -37,7 +37,7 @@ Address: 172.17.236.254
 
 Now we have a few problems.  First, CoreDNS is exposed via a ClusterIP (here, 172.17.0.10), which is only accessible from inside the cluster.  Second, if you query it, it will give you another 172 address, which again is no good from outside the cluster!  Also, the `.svc.cluster.local` domain is kinda clunky.
 
-I came across [this](https://www.reddit.com/r/homelab/comments/ipsc4r/howto_k8s_metallb_and_external_dns_access_for/) Reddit post, which also covers MetalLB, but I just picked out what I needed for CoreDNS, namely setting up the [k8s_external](https://coredns.io/plugins/k8s_external/#description) plugin, which is a matter of editing its configmap with `kubectl -n kube-system edit cm coredns` and adding:
+I came across [this Reddit post](https://www.reddit.com/r/homelab/comments/ipsc4r/howto_k8s_metallb_and_external_dns_access_for/), which also covers MetalLB, but I just picked out what I needed for CoreDNS, namely setting up the [k8s_external](https://coredns.io/plugins/k8s_external/#description) plugin, which is a matter of editing its configmap with `kubectl -n kube-system edit cm coredns` and adding:
 
 ```
 k8s_external tristan {                                                                                                                       
@@ -45,7 +45,7 @@ k8s_external tristan {
 }     
 ```
 
-I added the headless keyword because we have a number of StatefulSets and those are [headless](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services).  The above entry adds the `tristan` domain to CoreDNS, and when it is queried for `service_name.namespace.tristan`, it will give the _external_ IP addresses:
+I added the headless keyword because we have a number of StatefulSets and those are [headless](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services).  The above entry adds the `tristan` domain to CoreDNS, and when it is queried for `service_name.namespace.tristan`, it will give the **external** IP addresses:
 
 ```
 ❯ nslookup minecraft-0.minecraft.tristan 172.17.0.10
@@ -56,7 +56,7 @@ Name:	minecraft-0.minecraft.tristan
 Address: 10.100.0.1
 ```
 
-Progress!  However we still have that 172 address for CoreDNS, so we'll need to expose that:
+Progress!  However we still have that 172 address for CoreDNS, so we'll need to expose that through MetalLB:
 
 ```
 apiVersion: v1
