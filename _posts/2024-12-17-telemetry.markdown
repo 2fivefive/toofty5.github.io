@@ -30,6 +30,8 @@ Our kid was in charge of the servo code.  His task was to write a function with 
 
 In any case, it works!  Here's us testing it.  He did a great job on that chicane too!  Github repo for the project [here](https://github.com/minsun-ss/racingtelemetry).
 
+<p style="text-align:center;">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/CRz9H5GCs_4?si=YOq3tJucevnV7BKS" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</p>
 
 He was 8 years old at the time of the video.

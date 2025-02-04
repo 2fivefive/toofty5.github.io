@@ -1,0 +1,15 @@
+---
+layout: post
+title: Bird is not ready.
+categories: blog
+---
+
+WHAT THE HELL IS BIRD.
+
+```
+Readiness probe failed: calico/node is not ready: BIRD is not ready: 
+Error querying BIRD: unable to connect to BIRDv4 socket: 
+dial unix /var/run/calico/bird.ctl: connect: connection refused
+```
+
+Followup: I did a bunch of network futzing on the node, and broke pretty much everything, and after I got it up again, Calico stayed broken with this error message.  A reboot cleared it up and I never figured out what BIRD was, but I kind of want to remain ignorant of this one thing because it makes `error querying bird/bird is not ready` way funnier.
