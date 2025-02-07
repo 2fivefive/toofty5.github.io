@@ -1,0 +1,9 @@
+---
+layout: post
+title: Hallway troubleshooting
+categories: blog
+---
+
+![Crash](/assets/lacp-2.jpg)
+
+At some point I bought this little 7" LCD screen for a FPGA project I never got started on, and it had been sitting around in a drawer till now.  Turns out, combined with a wireless keyboard, it's the perfect kit for some emergency hallway troubleshooting for when you mangle your network configuration and lose SSH access.
