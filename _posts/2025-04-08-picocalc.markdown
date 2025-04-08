@@ -1,0 +1,23 @@
+---
+layout: post
+title: picocalc
+categories: blog
+---
+
+![picocalc](/assets/picocalc1.jpg)
+
+We got a pair of [PicoCalcs](https://www.clockworkpi.com/picocalc), and they've been a ton of fun.
+
+I'm not entirely sure how to describe the PicoCalc.  It's got the form factor of the [oldschool graphing calculators](https://en.wikipedia.org/wiki/TI-85) (do people still use these?), but it's more or less a self-contained single board computer with keyboard, display, and audio.  Inisde is your choice of several [Raspberry Pi Pico](https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html) microcontrollers.
+
+It comes loaded with [PicoMite](https://geoffg.net/picomite.html), an MMBASIC interpreter.  My older brother taught me a bit of BASICon his Commodore 64 when I was 7 or 8, so using the PicoCalc comes with a lot more nostalgia than just the form factor.  
+
+![picocalc](/assets/picocalc2.jpg)
+
+So far it's just been silly little graphics and sound synth programs.  It's pretty slow and the 256k of RAM doesn't leave enough room for multiple framebuffers, so decent animation is out of the question.  You have access to the GPIO pins so you could work sensors and lights and motors like you would with Arduino, but you'd probably be better off just using an Arduino.
+
+I've been using it as an alternative to bedtime doomscrolling.  Coding on a phone sucks, but thumbtyping on this little clicky keyboard actually works really well and you can do it sitting up or lying down in bed.
+
+I'll probably never make anything remotely useful with this thing but that's sort of the whole appeal.  Not really having a lot of support for it at work, I'm really left with these little toy programs that don't really do a whole lot other than look cool.  One of these days I really should, though.  The open source community is probably a good place to start and I've been looking for the right opportunity to jump in and help out a bit.
+
+
