@@ -4,7 +4,9 @@ title: Minecraft
 categories: blog
 ---
 
-Finally got around to doing this.  Now to figure out why.
+Finally got around to giving this a proper go.  I had a little 1-replica deployment going on the Pi cluster during Lockdown but back then I hadn't figured out PVCs or MetalLB, so it wasn't very scalable.  However we did spend some good time in there.
+
+Now, when his friends come over, I can spin up a new server for them so they don't wreck his three personal ones.
 
 ```
 apiVersion: apps/v1
