@@ -44,6 +44,6 @@ The remaining problem is, when the API call is made, the whole device freezes fo
 
 There are also four buttons on the back of the display, and I've been wondering about what kinds of things I could do with them with the API.  Turn the ad blocker on and off?  Cut my kid's internet access when necessary?  Maybe initiate a graceful shutdown in case of a power outage.
 
-
+In any case, I'm hoping to make a library of these visualizations because I spend my day at work looking at line graphs, but it's nice to see it in a different way, even if it's completely qualitative and not exactly representative of reality (I fudged with multipliers a lot to get it to "look right").
 
 [Github repository here](https://github.com/2fivefive/stellar-unicorn-viz)
