@@ -46,4 +46,6 @@ There are also four buttons on the back of the display, and I've been wondering 
 
 In any case, I'm hoping to make a library of these visualizations because I spend my day at work looking at line graphs, but it's nice to see network activity in a more tangible way, even if it's completely qualitative and not exactly representative of reality (I fudged with multipliers a lot to get it to "look right").
 
+Oh, and another great thing about this -- it's got wifi, so I can just put this anywhere in the house, give it 5VDC and it automatically connects and starts doing its thing.
+
 [Github repository here](https://github.com/2fivefive/stellar-unicorn-viz)
