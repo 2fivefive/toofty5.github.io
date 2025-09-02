@@ -9,9 +9,7 @@ categories: blog
 </p>
 
 
-A while back I came across this [Stellar Unicorn](https://shop.pimoroni.com/products/space-unicorns) in the clearance bin at Micro Center for $15 and picked it up.  It came with a few neat graphics scripts, but the real purpose is for you to write your own.
-
-It's basically a 16x16 RGB LED display with a [Raspberry Pi Pico W](https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html) stuck to the back of it.  It comes with a few example animations, but the real fun is for you to write your own.  It was only now that I figured it was time to sit down and learn how to.
+A while back I came across this [Stellar Unicorn](https://shop.pimoroni.com/products/space-unicorns) in the clearance bin at Micro Center for $15 and picked it up.  It's basically a 16x16 RGB LED display with a [Raspberry Pi Pico W](https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html) stuck to the back of it.  It comes with a few neat example graphics scripts, but the real purpose is for you to write your own.  It was only now that I figured it was time to sit down and learn how to.
 
 ![matrix](/assets/matrix1.jpg)
 
