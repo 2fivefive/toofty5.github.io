@@ -37,3 +37,4 @@ end
 gem "http_parser.rb"
 gem "jekyll-remote-theme"
 gem "jekyll-paginate"
+gem "openssl"
