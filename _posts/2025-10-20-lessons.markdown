@@ -1,0 +1,26 @@
+---
+layout: post
+title: It's not the network (it's kind of the network).
+categories: blog
+---
+
+![cilium](/assets/cilium.png)
+
+We're back in business on the Pi cluster, now with [Cilium](https://cilium.io/use-cases/cni/).  The fun thing about all this cloud native stuff is the aggressive vendor agnosticity.  You don't go far in the installation documentation for this stuff before hitting a fork in the road where you need to choose a solution to an issue you never knew even existed.  In this case, it's your Container Network Interface, or CNI.
+
+Sure, containers are just little bits of your operating system sliced off and cordoned off for a specific set of processes.  But that can only go so far on the local system, and if it's not local, it's networked, and if it's networked, it needs a network!
+
+CNIs form the bridge* from the containers running on a machine, through the machine's network stack, and then out the physical interface into your network in a way the rest of the network will actually make sense of.
+
+_*The word "bridge" has a certain meaning in the context of networking, but other words like route, path, connection also have their own pedantic meanings, so I had to pick one.  Also, some CNIs do in fact form a virtual bridge._
+
+Anyway, in the course of your Kubernetes installation, you will be prompted to choose a CNI without much help on which one to choose.  I have previously used [Calico](https://docs.tigera.io/calico/latest/getting-started/kubernetes/hardway/install-cni-plugin) and [Flannel](https://github.com/flannel-io/flannel) without much difference to me and my current capabilities.  This time, for a change of pace, I decided to use Cilium.  It's a slightly different process from the others in which you need to install the CLI app first and then use that to deploy a helm chart whereas the others have you deploy the charts yourself.
+
+In the course of this, I learned a few lessons:
+- Ubuntu uses systemd-resolved to resolve DNS, which by default does not consider DHCP option 119.  This is probably only relevant to my case in which I have a .lab domain in my house where all the weird experimental stuff sits.  DHCP option 119 is the reason you don't need to specify .local when you ping another device by name on your home network.  Your local DNS resolver has search domains that it will automatically append to non-FQDN hostnames; it learns these when your device connects to the network and makes a DHCP request to get its IP address, and the DHCP server replies with the IP address along with the search domains.
+
+To resolve this you need to add the line `UseDomains=true` to `/run/systemd/resolve/stub-resolv.conf` and do a `systemctl restart systemd-resolved`.  After that, systemd-resolved will start using the domains learned from option 119.
+
+- When you initialize your kubelet with `kubeadm`, you should specify the `--pod-network-cidr` parameter.  It specifies the full range of IP addresses that Kubernetes can use to assign to its pods.  This, weirdly, gets stored in Kubernetes under the value of `cluster-cidr`.  More confusingly, there exists a **`pod-cidr`** value, which is a subset of the `cluster-cidr` specific to each node.  When the `pod-cidr` is equal or larger than the `pod-network-cidr`, Cilium will fail to start.  In my case I had set my `pod-network-cidr` to `172.16.0.0/24`, which coincidentally lines up with the default `pod-cidr`.  Setting that back to `172.16.0.0/16` got everything working again.
+
+This all goes to say that, as a network engineer, it seems like everyone is blaming the network, where from your perspective the packets are going to and from the correct black boxes as designed, and your responsibilities are fulfilled.  The hard part is that nowadays, with virtualization and containerization, the network has extended into the boxes.  It's all too easy to get stuck in traditional ways of physical switches and routers, when actually there can be any number of virtual switches and routers _inside each of your endpoints_, and unless you find a way to meet somewhere in the middle with the endpoint folks, none of this goes anywhere and we're all just stuck talking to ourselves.
