@@ -1,0 +1,38 @@
+---
+layout: post
+title: The Canary Killed the Coal Mine
+categories: blog
+---
+
+I've been working on getting an observability stack going on the cluster, and came across one of those situations where the thing looked broken, but actually it was working perfectly as intended.  In early stages here, my plan was to monitor the syslogs on my Ubiquiti setup.  
+
+There's a handy little section for offloading syslogs in the UI:
+
+![syslog1](/assets/syslog1.png)
+
+![syslog2](/assets/syslog2.png)
+Wouldn't it be fun if that was all it took?  That 10.20.0.0 address, conveniently supplied by Cilium, is the loadbalancer IP for Alloy.
+
+The plan was to set up [Alloy](https://grafana.com/docs/alloy/latest/) to receive the logs from the UDM Pro, forward them to [Loki](https://grafana.com/oss/loki/), where I can visualize them with [Grafana](https://grafana.com/docs/grafana/latest/).  
+
+
+Having never touched any of this before (aside from a whirlwind of a migration of a Splunk instance at work), I had no idea where to look to see if anything was happening at all.  Eventually, I found the Explore section in Grafana hoping to see some raw logs, where I saw:
+![canary1](/assets/canary1.png)
+
+Which I guess was something, but looked like a case of unrecognized formatting.  I lost a day until I figured out that the source was from a daemonset called Loki Canary.  Upon [looking up what the heck that was](https://grafana.com/docs/loki/latest/operations/loki-canary/), I found this:
+![canary4](/assets/canary4.png)
+
+Apparently the entries full of `ppppppppppppppppppppppppppp` were pretty much a heartbeat from each Canary pod in the cluster.  If those were to ever stop, you'd know something was wrong.
+
+However, it was completely flooding out my raw (for now) logs at tens of thousands of entries a day.
+![canary3](/assets/canary3.png)
+
+After adding the below to my `values.yaml`:
+```yaml
+# no more pppppppppppppppppppppppppppppp
+lokiCanary:
+  enabled: false
+
+```
+Everything started looking a lot more normal:
+![canary2](/assets/canary2.png)
